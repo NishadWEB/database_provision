@@ -1,0 +1,43 @@
+-- Install PostgreSQL, create a database and a limited-privilege role, then back up and restore it.
+1) Connect to postgresql via terminal as user postgres
+psql -U postgres
+
+ 2) Creating a db
+CREATE DATABASE bank_db;
+
+3) Connect to the newly created db
+\c bank_db
+
+4) Create table
+CREATE TABLE employees(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50) NOT NULL
+);
+
+5) Insert sample data
+INSERT INTO employees (emp_id, emp_name)
+VALUES
+    (1, 'John'),
+    (2, 'David'),
+    (3, 'Alice');
+
+6) Create a Limited-Privilege Role
+CREATE ROLE role_name LOGIN PASSWORD 'YOUR_PASSWORD';
+
+7) Grant Read-Only Permission
+GRANT CONNECT ON DATABASE bank_db TO analyst;
+GRANT USAGE ON SCHEMA public TO analyst;
+GRANT SELECT ON employees TO analyst;
+
+8) Check the record
+SELECT * FROM employees;
+
+9) DB backup
+pg_dump -U postgres -d bank_db -f bank_db.sql
+
+10) DB restore
+- create a new db
+createdb -U postgres new_db
+
+- restore the backup
+psql -U postgres -d new_db -f bank_db.sql
